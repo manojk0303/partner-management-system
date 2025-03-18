@@ -44,7 +44,7 @@ A comprehensive platform for managing brand partnerships, offers, and discounts.
 ![Brand Creation Page](./screenshots/Screenshot-9.png)
 *Brand Creation Page*
 
-![Offer Creation Page](./screenshots/Screenshot-10.png)
+![Offer  Creation Page](./screenshots/Screenshot-10.png)
 *Offer Creation Page*
 
 
