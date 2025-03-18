@@ -19,17 +19,33 @@ A comprehensive platform for managing brand partnerships, offers, and discounts.
 
 ## 📸 Screenshots & Demo
 
-```markdown
-![Public Offers Page](./screenshots/Screenshot-2.png)
+
+![Public Offers Page](screenshots/Screenshot-2.png)
+*Public Offers Page*
+
 ![Public Individual Offer Page](./screenshots/Screenshot-3.png)
+*Public Individual Offer Page*
+
 ![Register Page](./screenshots/Screenshot-4.png)
+*Register Page*
+
 ![Login Page](./screenshots/Screenshot-5.png)
+*Login Page*
+
 ![Admin Dashboard](./screenshots/Screenshot-6.png)
+*Admin Dashboard*
+
 ![Partner Brands Page](./screenshots/Screenshot-7.png)
+*Partner Brands Page*
+
 ![Partner Offers Page](./screenshots/Screenshot-8.png)
+*Partner Offers Page*
+
 ![Brand Creation Page](./screenshots/Screenshot-9.png)
+*Brand Creation Page*
+
 ![Offer Creation Page](./screenshots/Screenshot-10.png)
-```
+*Offer Creation Page*
 
 
    ```markdown
