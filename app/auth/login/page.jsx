@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { Suspense } from 'react';
 
 
-export default function Login() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
@@ -77,7 +77,6 @@ export default function Login() {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -215,6 +214,38 @@ export default function Login() {
       </motion.div>
 
     </div>
+  );
+}
+
+
+// Main component with proper suspense boundaries
+export default function Login() {
+  const { status } = useSession();
+
+  // If loading session, show loading state
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="p-8 rounded-xl shadow-md bg-white/80 backdrop-blur-sm"
+        >
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-4 h-4 rounded-full bg-indigo-600 animate-pulse" />
+            <div className="w-4 h-4 rounded-full bg-indigo-400 animate-pulse delay-150" />
+            <div className="w-4 h-4 rounded-full bg-indigo-200 animate-pulse delay-300" />
+          </div>
+          <p className="text-gray-600 mt-3 text-center font-medium">Loading...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
     </Suspense>
   );
 }
