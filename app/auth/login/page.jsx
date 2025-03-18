@@ -6,6 +6,8 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Suspense } from 'react';
+
 
 export default function Login() {
   const router = useRouter();
@@ -75,6 +77,7 @@ export default function Login() {
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -212,5 +215,6 @@ export default function Login() {
       </motion.div>
 
     </div>
+    </Suspense>
   );
 }
