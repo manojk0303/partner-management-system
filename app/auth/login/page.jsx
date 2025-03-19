@@ -43,14 +43,26 @@ function LoginFormContent() {
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
 
  // Inside your useEffect:
+// In your LoginFormContent component
 useEffect(() => {
-  if (status === "authenticated" && session?.user?.role === "ADMIN" && !isRedirecting) {
-    console.log("User authenticated as admin, redirecting to /admin");
-    setIsRedirecting(true);
-    // Use window.location for consistency with your other redirect
-    window.location.href = "/admin";
+  if (status === "authenticated") {
+    console.log("Session: ", JSON.stringify(session, null, 2));
+    
+    // Only redirect if user is an admin AND we're not already redirecting
+    if (session?.user?.role === "ADMIN" && !isRedirecting) {
+      console.log("User authenticated as admin, redirecting to /admin");
+      setIsRedirecting(true);
+      
+      // Use a delay to ensure session is fully processed
+      setTimeout(() => {
+        window.location.href = "/admin";
+      }, 300);
+    } else if (session?.user && session?.user?.role !== "ADMIN") {
+      // If user is logged in but not an admin, show an error
+      setError("You need admin privileges to access this area");
+    }
   }
-}, [status, session, router, isRedirecting]);
+}, [status, session, isRedirecting]);
 
 // Modify your handleSubmit function:
 const handleSubmit = async (e) => {
