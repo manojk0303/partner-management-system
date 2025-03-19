@@ -48,7 +48,7 @@ export default function CreateOfferPage({ params }) {
       try {
         const token = localStorage.getItem('adminToken');
         if (!token) {
-          router.push('/admin/login');
+          router.push('/auth/login');
           return;
         }
 
@@ -90,7 +90,7 @@ export default function CreateOfferPage({ params }) {
     try {
       const token = localStorage.getItem('adminToken');
       if (!token) {
-        router.push('/admin/login');
+        router.push('/auth/login');
         return;
       }
 

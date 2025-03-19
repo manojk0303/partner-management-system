@@ -9,7 +9,7 @@ export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
   
   if (!session) {
-    redirect('/admin/login');
+    redirect('/auth/login');
   }
   
   // Fetch dashboard statistics

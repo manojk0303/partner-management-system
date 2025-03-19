@@ -123,7 +123,7 @@ const AdminNavigation = () => {
               </Link>
               
               <button
-                onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                onClick={() => signOut({ callbackUrl: '/auth/login' })}
                 className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mt-2"
               >
                 <span className="mr-3 text-gray-500">
@@ -188,7 +188,7 @@ const AdminNavigation = () => {
           </Link>
           
           <button
-            onClick={() => signOut({ callbackUrl: '/admin/login' })}
+            onClick={() => signOut({ callbackUrl: '/auth/login' })}
             className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mt-2 group"
           >
             <span className="mr-3 text-gray-500 group-hover:text-red-500 transition-colors">

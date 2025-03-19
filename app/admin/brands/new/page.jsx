@@ -28,7 +28,7 @@ export default function CreateBrandPage() {
   // Check authentication status
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/admin/login');
+      router.push('/auth/login');
     }
   }, [status, router]);
 
