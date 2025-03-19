@@ -4,6 +4,7 @@ A comprehensive platform for managing brand partnerships, offers, and discounts.
 
 ## 🚀 Features
 
+
 ### Public Features
 - Browse all partner brands with their active offers
 - View detailed information about each partner
