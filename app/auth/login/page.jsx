@@ -42,27 +42,37 @@ function LoginFormContent() {
   const success = searchParams.get("success");
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
 
+  useEffect(() => {
+    // If we're already on the login page with a callbackUrl that points back to login,
+    // clear it to prevent a potential redirect loop
+    if (callbackUrl && callbackUrl.includes("/auth/login")) {
+      router.replace("/auth/login", undefined, { shallow: true });
+    }
+  }, [callbackUrl, router]);
+  
  // Inside your useEffect:
 // In your LoginFormContent component
 useEffect(() => {
-  if (status === "authenticated") {
+  // Only proceed if we have a valid session
+  if (status === "authenticated" && session?.user) {
     console.log("Session: ", JSON.stringify(session, null, 2));
     
-    // Only redirect if user is an admin AND we're not already redirecting
-    if (session?.user?.role === "ADMIN" && !isRedirecting) {
+    // Check role
+    if (session.user.role === "ADMIN") {
       console.log("User authenticated as admin, redirecting to /admin");
-      setIsRedirecting(true);
       
-      // Use a delay to ensure session is fully processed
-      setTimeout(() => {
-        window.location.href = "/admin";
-      }, 300);
-    } else if (session?.user && session?.user?.role !== "ADMIN") {
+      // Use router.push instead of window.location for better Next.js integration
+      if (!isRedirecting) {
+        setIsRedirecting(true);
+        router.push("/admin");
+      }
+    } else {
       // If user is logged in but not an admin, show an error
       setError("You need admin privileges to access this area");
+      setLoading(false);
     }
   }
-}, [status, session, isRedirecting]);
+}, [status, session, router, isRedirecting]);
 
 // Modify your handleSubmit function:
 const handleSubmit = async (e) => {
@@ -86,13 +96,8 @@ const handleSubmit = async (e) => {
     if (result?.error) {
       setError(result.error);
       setLoading(false);
-    } else if (result?.ok) {
-      console.log("Login successful, preparing to redirect");
-      setIsRedirecting(true);
-      
-      // Simplify the redirect logic - don't use the callbackUrl parameter
-      window.location.href = "/admin";
     }
+    // Don't set redirecting or redirect here - let the useEffect handle it
   } catch (error) {
     setError("An unexpected error occurred");
     console.error("Login error:", error);
