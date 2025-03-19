@@ -93,23 +93,38 @@ export default function CreateBrandPage() {
       // First, upload the logo if a file was selected
       let logoUrl = formData.logo;
       
-      if (logoFile) {
-        const logoFormData = new FormData();
-        logoFormData.append('file', logoFile);
-        
-        const logoUploadResponse = await fetch('/api/admin/upload', {
-          method: 'POST',
-          body: logoFormData,
-        });
-        
-        if (!logoUploadResponse.ok) {
-          const errorData = await logoUploadResponse.json().catch(() => ({}));
-          throw new Error(`Failed to upload logo: ${errorData.error || logoUploadResponse.status}`);
-        }
-        
-        const logoData = await logoUploadResponse.json();
-        logoUrl = logoData.url;
+// Update the part of your handleSubmit function where you upload the logo
+if (logoFile) {
+  const logoFormData = new FormData();
+  logoFormData.append('file', logoFile);
+  
+  try {
+    const logoUploadResponse = await fetch('/api/admin/upload', {
+      method: 'POST',
+      body: logoFormData,
+    });
+    
+    // Check if the response is JSON
+    const contentType = logoUploadResponse.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      const logoData = await logoUploadResponse.json();
+      
+      if (!logoUploadResponse.ok) {
+        throw new Error(`Failed to upload logo: ${logoData.error || logoUploadResponse.status}`);
       }
+      
+      logoUrl = logoData.url;
+    } else {
+      // If not JSON, log the actual text response for debugging
+      const textResponse = await logoUploadResponse.text();
+      console.error('Non-JSON response:', textResponse);
+      throw new Error('Server returned a non-JSON response');
+    }
+  } catch (error) {
+    console.error('Logo upload error:', error);
+    throw error;
+  }
+}
       
       // Prepare the updated brand data with the uploaded logo URL
       const brandData = {
