@@ -1,6 +1,8 @@
+// middleware.js
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+// middleware.js
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
@@ -16,13 +18,8 @@ export async function middleware(request) {
   // For admin routes, verify authentication and role
   const token = await getToken({ 
     req: request, 
-    secret: process.env.NEXTAUTH_SECRET 
+    secret: process.env.NEXTAUTH_SECRET
   });
-
-  // Add debug logging
-  console.log("Middleware checking path:", pathname);
-  console.log("Token found:", token ? "Yes" : "No");
-  console.log("Role:", token?.role);
 
   // If not authenticated or not an admin
   if (!token || token.role !== "ADMIN") {
@@ -37,12 +34,19 @@ export async function middleware(request) {
       );
     }
     
-    // Simplify the redirect logic - don't include a potentially problematic callbackUrl
-    // This helps avoid redirect loops
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+    // Add cache-control header to prevent caching issues
+    const redirectUrl = new URL("/auth/login", request.url)
+    return NextResponse.redirect(redirectUrl, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      }
+    });
   }
 
-  return NextResponse.next();
+  // Add cache-control header to all responses
+  const response = NextResponse.next();
+  response.headers.set('Cache-Control', 'no-store, max-age=0');
+  return response;
 }
 
 // Configure which routes to apply this middleware to

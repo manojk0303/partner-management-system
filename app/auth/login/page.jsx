@@ -49,21 +49,17 @@ function LoginFormContent() {
   }, [status, session, redirectAttempted]);
 
   // Handle redirect logic
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN" && !redirectAttempted) {
-      console.log("Authentication successful, setting redirect flag");
-      setRedirectAttempted(true);
-      
-      // Use a more direct approach with minimal delay
-      setTimeout(() => {
-        console.log("Executing redirect to /admin");
-        window.location.href = "/admin";
-      }, 100);
-    } else if (status === "authenticated" && session?.user?.role !== "ADMIN") {
-      setError("You need admin privileges to access this area");
-    }
-  }, [status, session, redirectAttempted]);
-
+useEffect(() => {
+  if (status === "authenticated" && session?.user?.role === "ADMIN" && !redirectAttempted) {
+    console.log("Authentication successful, setting redirect flag");
+    setRedirectAttempted(true);
+    
+    router.push("/admin");
+  } else if (status === "authenticated" && session?.user?.role !== "ADMIN") {
+    setError("You need admin privileges to access this area");
+    setLoading(false);
+  }
+}, [status, session, redirectAttempted, router]);
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
