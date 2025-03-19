@@ -1,13 +1,34 @@
-// app/auth/login/page.jsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-function LoginForm() {
+// Loading component for Suspense fallback
+function LoadingSpinner() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="p-8 rounded-xl shadow-md bg-white/80 backdrop-blur-sm"
+      >
+        <div className="flex items-center justify-center space-x-2">
+          <div className="w-4 h-4 rounded-full bg-indigo-600 animate-pulse" />
+          <div className="w-4 h-4 rounded-full bg-indigo-400 animate-pulse delay-150" />
+          <div className="w-4 h-4 rounded-full bg-indigo-200 animate-pulse delay-300" />
+        </div>
+        <p className="text-gray-600 mt-3 text-center font-medium">Loading...</p>
+      </motion.div>
+    </div>
+  );
+}
+
+// Main login form component that uses searchParams
+function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
@@ -75,23 +96,7 @@ function LoginForm() {
 
   // If loading session, show loading state
   if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="p-8 rounded-xl shadow-md bg-white/80 backdrop-blur-sm"
-        >
-          <div className="flex items-center justify-center space-x-2">
-            <div className="w-4 h-4 rounded-full bg-indigo-600 animate-pulse" />
-            <div className="w-4 h-4 rounded-full bg-indigo-400 animate-pulse delay-150" />
-            <div className="w-4 h-4 rounded-full bg-indigo-200 animate-pulse delay-300" />
-          </div>
-          <p className="text-gray-600 mt-3 text-center font-medium">Loading...</p>
-        </motion.div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
@@ -231,6 +236,15 @@ function LoginForm() {
         </form>
       </motion.div>
     </div>
+  );
+}
+
+// Wrap the component that uses searchParams in Suspense
+function LoginForm() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <LoginFormContent />
+    </Suspense>
   );
 }
 
