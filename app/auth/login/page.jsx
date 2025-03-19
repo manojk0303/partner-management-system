@@ -42,50 +42,51 @@ function LoginFormContent() {
   const success = searchParams.get("success");
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
 
-  // If already authenticated and has admin role, redirect to admin dashboard
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN" && !isRedirecting) {
-      console.log("User authenticated as admin, redirecting to /admin");
-      setIsRedirecting(true);
-      router.replace("/admin");
-    }
-  }, [status, session, router, isRedirecting]);
+ // Inside your useEffect:
+useEffect(() => {
+  if (status === "authenticated" && session?.user?.role === "ADMIN" && !isRedirecting) {
+    console.log("User authenticated as admin, redirecting to /admin");
+    setIsRedirecting(true);
+    // Use window.location for consistency with your other redirect
+    window.location.href = "/admin";
+  }
+}, [status, session, router, isRedirecting]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+// Modify your handleSubmit function:
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (loading || isRedirecting) return;
+  
+  setLoading(true);
+  setError("");
+
+  try {
+    console.log("Attempting sign in with:", email);
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
     
-    // Don't submit if already loading or redirecting
-    if (loading || isRedirecting) return;
-    
-    setLoading(true);
-    setError("");
+    console.log("Sign in result:", result);
 
-    try {
-      console.log("Attempting sign in with:", email);
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-      
-      console.log("Sign in result:", result);
-
-      if (result?.error) {
-        setError(result.error);
-        setLoading(false);
-      } else if (result?.ok) {
-        console.log("Login successful, preparing to redirect");
-        setIsRedirecting(true);
-        
-        // Hard redirect after successful login
-        window.location.href = callbackUrl;
-      }
-    } catch (error) {
-      setError("An unexpected error occurred");
-      console.error("Login error:", error);
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
+    } else if (result?.ok) {
+      console.log("Login successful, preparing to redirect");
+      setIsRedirecting(true);
+      
+      // Simplify the redirect logic - don't use the callbackUrl parameter
+      window.location.href = "/admin";
     }
-  };
+  } catch (error) {
+    setError("An unexpected error occurred");
+    console.error("Login error:", error);
+    setLoading(false);
+  }
+};
 
   // If loading session, show loading state
   if (status === "loading" || isRedirecting) {
