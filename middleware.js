@@ -19,6 +19,11 @@ export async function middleware(request) {
     secret: process.env.NEXTAUTH_SECRET 
   });
 
+  // Add debug logging
+  console.log("Middleware checking path:", pathname);
+  console.log("Token found:", token ? "Yes" : "No");
+  console.log("Role:", token?.role);
+
   // If not authenticated or not an admin
   if (!token || token.role !== "ADMIN") {
     // For API routes, return a JSON response instead of redirecting
@@ -32,10 +37,9 @@ export async function middleware(request) {
       );
     }
     
-    // For regular routes, redirect to login
-    const url = new URL("/auth/login", request.url);
-    url.searchParams.set("callbackUrl", encodeURI(request.url));
-    return NextResponse.redirect(url);
+    // Simplify the redirect logic - don't include a potentially problematic callbackUrl
+    // This helps avoid redirect loops
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   return NextResponse.next();

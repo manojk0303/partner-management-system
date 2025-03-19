@@ -36,80 +36,71 @@ function LoginFormContent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [redirectAttempted, setRedirectAttempted] = useState(false);
   
   // Get success message from URL if present
   const success = searchParams.get("success");
-  const callbackUrl = searchParams.get("callbackUrl") || "/admin";
-
+  
+  // Debug info
   useEffect(() => {
-    // If we're already on the login page with a callbackUrl that points back to login,
-    // clear it to prevent a potential redirect loop
-    if (callbackUrl && callbackUrl.includes("/auth/login")) {
-      router.replace("/auth/login", undefined, { shallow: true });
-    }
-  }, [callbackUrl, router]);
-  
- // Inside your useEffect:
-// In your LoginFormContent component
-useEffect(() => {
-  // Only proceed if we have a valid session
-  if (status === "authenticated" && session?.user) {
-    console.log("Session: ", JSON.stringify(session, null, 2));
-    
-    // Check role
-    if (session.user.role === "ADMIN") {
-      console.log("User authenticated as admin, redirecting to /admin");
+    console.log("Current auth status:", status);
+    console.log("Session data:", session);
+    console.log("Redirect attempted:", redirectAttempted);
+  }, [status, session, redirectAttempted]);
+
+  // Handle redirect logic
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN" && !redirectAttempted) {
+      console.log("Authentication successful, setting redirect flag");
+      setRedirectAttempted(true);
       
-      // Use router.push instead of window.location for better Next.js integration
-      if (!isRedirecting) {
-        setIsRedirecting(true);
-        router.push("/admin");
-      }
-    } else {
-      // If user is logged in but not an admin, show an error
+      // Use a more direct approach with minimal delay
+      setTimeout(() => {
+        console.log("Executing redirect to /admin");
+        window.location.href = "/admin";
+      }, 100);
+    } else if (status === "authenticated" && session?.user?.role !== "ADMIN") {
       setError("You need admin privileges to access this area");
-      setLoading(false);
     }
-  }
-}, [status, session, router, isRedirecting]);
+  }, [status, session, redirectAttempted]);
 
-// Modify your handleSubmit function:
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (loading || isRedirecting) return;
-  
-  setLoading(true);
-  setError("");
-
-  try {
-    console.log("Attempting sign in with:", email);
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-    console.log("Sign in result:", result);
+    if (loading || redirectAttempted) return;
+    
+    setLoading(true);
+    setError("");
 
-    if (result?.error) {
-      setError(result.error);
+    try {
+      console.log("Attempting sign in with:", email);
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      
+      console.log("Sign in result:", result);
+
+      if (result?.error) {
+        setError(result.error);
+        setLoading(false);
+      }
+      // Don't redirect here - let the useEffect handle it when session is updated
+    } catch (error) {
+      setError("An unexpected error occurred");
+      console.error("Login error:", error);
       setLoading(false);
     }
-    // Don't set redirecting or redirect here - let the useEffect handle it
-  } catch (error) {
-    setError("An unexpected error occurred");
-    console.error("Login error:", error);
-    setLoading(false);
-  }
-};
+  };
 
   // If loading session, show loading state
-  if (status === "loading" || isRedirecting) {
+  if ((status === "loading" || redirectAttempted) && !error) {
     return <LoadingSpinner />;
   }
 
+  // Render login form
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
@@ -219,7 +210,7 @@ const handleSubmit = async (e) => {
               whileTap={{ scale: 0.98 }}
               whileHover={{ scale: 1.01 }}
               type="submit"
-              disabled={loading || isRedirecting}
+              disabled={loading || redirectAttempted}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-md transition-all duration-200"
             >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
@@ -227,13 +218,13 @@ const handleSubmit = async (e) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                 </svg>
               </span>
-              {loading || isRedirecting ? (
+              {loading || redirectAttempted ? (
                 <div className="flex items-center justify-center">
                   <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  {isRedirecting ? "Redirecting..." : "Signing in..."}
+                  {redirectAttempted ? "Redirecting..." : "Signing in..."}
                 </div>
               ) : "Sign in"}
             </motion.button>
