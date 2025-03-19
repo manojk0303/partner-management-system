@@ -11,6 +11,7 @@ export async function POST(request) {
     if (!session || session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    console.log("User is authenticated as admin = ", session);
     
     const formData = await request.formData();
     const file = formData.get('file');

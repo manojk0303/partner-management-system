@@ -71,7 +71,7 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-white">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
           <p className="mt-4 text-blue-600 font-medium animate-pulse">Loading partner brands...</p>
@@ -95,31 +95,56 @@ export default function HomePage() {
             <h2 className="text-xl font-semibold text-gray-800">Error Occurred</h2>
           </div>
           <p className="text-gray-700 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Retry
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button 
+              onClick={() => window.location.reload()}
+              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Retry
+            </button>
+            <Link href="/admin"
+              className="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors duration-300"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Go to Admin
+            </Link>
+          </div>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-12">
+    <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white pb-12">
       <div className="container mx-auto px-4 py-8">
+        {/* Admin panel link - Visible at the top right */}
+        <div className="absolute top-4 right-4 z-10">
+          <Link 
+            href="/admin"
+            className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Admin Dashboard
+          </Link>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-12 pt-8"
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">Partner Brands & Offers</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">Discover exclusive deals and offers from our trusted brand partners.</p>
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 text-gray-800 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Partner Brands & Offers</h1>
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg">Discover exclusive deals and offers from our trusted brand partners.</p>
         </motion.div>
 
         {/* Search and Filter */}
@@ -129,7 +154,7 @@ export default function HomePage() {
           transition={{ duration: 0.4, delay: 0.1 }}
           className="mb-8"
         >
-          <div className="bg-white rounded-lg shadow-md p-4 flex flex-col sm:flex-row gap-4">
+          <div className="bg-white rounded-lg shadow-lg p-4 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-grow">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -138,14 +163,14 @@ export default function HomePage() {
               </div>
               <input
                 type="text"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-300"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-300"
                 placeholder="Search brands by name, description or location..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <button
-              className={`inline-flex items-center px-4 py-2 border ${filterActive ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-gray-300 text-gray-700'} rounded-md shadow-sm text-sm font-medium hover:bg-blue-600 hover:text-white hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300`}
+              className={`inline-flex items-center px-4 py-3 border ${filterActive ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-gray-300 text-gray-700'} rounded-md shadow-sm text-sm font-medium hover:bg-blue-600 hover:text-white hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300`}
               onClick={() => setFilterActive(!filterActive)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,17 +184,17 @@ export default function HomePage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-white rounded-lg shadow-md p-4 mt-2"
+              className="bg-white rounded-lg shadow-lg p-4 mt-2"
             >
               <div className="flex flex-wrap gap-3">
                 <button 
-                  className={`px-3 py-1 rounded-full ${activeFilters.hasOffers ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'} text-sm font-medium hover:bg-blue-200 transition-colors duration-300`}
+                  className={`px-4 py-2 rounded-full ${activeFilters.hasOffers ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'} text-sm font-medium hover:bg-blue-200 transition-colors duration-300`}
                   onClick={() => toggleFilter('hasOffers')}
                 >
                   Has Offers
                 </button>
                 <button 
-                  className={`px-3 py-1 rounded-full ${activeFilters.recentlyAdded ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800'} text-sm font-medium hover:bg-gray-200 transition-colors duration-300`}
+                  className={`px-4 py-2 rounded-full ${activeFilters.recentlyAdded ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800'} text-sm font-medium hover:bg-gray-200 transition-colors duration-300`}
                   onClick={() => toggleFilter('recentlyAdded')}
                 >
                   Recently Added
@@ -197,9 +222,9 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 * (index % 6) }}
-                className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-50"
               >
-                <div className="h-40 relative overflow-hidden bg-gray-50">
+                <div className="h-48 relative overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50">
                   {brand.logo && (
                     <Image
                       src={brand.logo}
@@ -211,7 +236,7 @@ export default function HomePage() {
                 </div>
                 
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-2 text-gray-800">{brand.name}</h2>
+                  <h2 className="text-xl font-bold mb-2 text-gray-800">{brand.name}</h2>
                   <p className="text-gray-600 mb-4 line-clamp-3">{brand.description}</p>
                   
                   {brand.location && (
@@ -246,7 +271,7 @@ export default function HomePage() {
                   
                   <Link 
                     href={`/brands/${brand.id}`}
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-300 w-full justify-center sm:w-auto"
+                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-colors duration-300 w-full justify-center"
                   >
                     <span>View Details</span>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -261,7 +286,7 @@ export default function HomePage() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white rounded-lg shadow-md p-8 text-center"
+            className="bg-white rounded-lg shadow-lg p-8 text-center"
           >
             {searchTerm || activeFilters.hasOffers || activeFilters.featured || activeFilters.recentlyAdded ? (
               <>
@@ -272,15 +297,30 @@ export default function HomePage() {
                 <p className="text-gray-600 mb-4">
                   {searchTerm ? `We couldn't find any brands matching "${searchTerm}"` : "No brands match your selected filters"}
                 </p>
-                <button 
-                  onClick={() => {
-                    setSearchTerm('');
-                    setActiveFilters({ hasOffers: false, featured: false, recentlyAdded: false });
-                  }}
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
-                >
-                  Clear All Filters
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button 
+                    onClick={() => {
+                      setSearchTerm('');
+                      setActiveFilters({ hasOffers: false, featured: false, recentlyAdded: false });
+                    }}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Clear All Filters
+                  </button>
+                  <Link 
+                    href="/admin"
+                    className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-300"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Go to Admin
+                  </Link>
+                </div>
               </>
             ) : (
               <>
@@ -288,7 +328,17 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">No partner brands available</h2>
-                <p className="text-gray-600">Check back soon for new partnerships and exclusive offers.</p>
+                <p className="text-gray-600 mb-4">Check back soon for new partnerships and exclusive offers.</p>
+                <Link 
+                  href="/admin"
+                  className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-300"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Go to Admin
+                </Link>
               </>
             )}
           </motion.div>

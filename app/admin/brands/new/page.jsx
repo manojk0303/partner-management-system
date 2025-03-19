@@ -102,6 +102,7 @@ if (logoFile) {
     const logoUploadResponse = await fetch('/api/admin/upload', {
       method: 'POST',
       body: logoFormData,
+      credentials: 'include'
     });
     
     // Check if the response is JSON

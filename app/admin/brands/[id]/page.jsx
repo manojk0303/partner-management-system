@@ -141,6 +141,7 @@ export default function AdminBrandEditPage() {
     e.preventDefault();
     setSaving(true);
     setError(null);
+
     
     try {
       // Upload logo if selected
@@ -153,6 +154,7 @@ export default function AdminBrandEditPage() {
         const logoUploadResponse = await fetch('/api/admin/upload', {
           method: 'POST',
           body: logoFormData,
+            credentials: 'include'
         });
         
         if (!logoUploadResponse.ok) {
@@ -181,6 +183,7 @@ export default function AdminBrandEditPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(brandData),
+            credentials: 'include'
         }
       );
       
@@ -203,6 +206,7 @@ export default function AdminBrandEditPage() {
             const imageUploadResponse = await fetch('/api/admin/upload', {
               method: 'POST',
               body: imageFormData,
+                credentials: 'include'
             });
             
             if (!imageUploadResponse.ok) {
@@ -221,6 +225,7 @@ export default function AdminBrandEditPage() {
                 url: imageData.url,
                 altText: `${savedBrand.name} image`,
               }),
+                credentials: 'include'
             });
           })
         );
@@ -245,6 +250,7 @@ export default function AdminBrandEditPage() {
     try {
       const response = await fetch(`/api/admin/images/${imageId}`, {
         method: 'DELETE',
+          credentials: 'include'
       });
       
       if (!response.ok) {

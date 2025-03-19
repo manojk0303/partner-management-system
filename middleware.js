@@ -19,8 +19,20 @@ export async function middleware(request) {
     secret: process.env.NEXTAUTH_SECRET 
   });
 
-  // If not authenticated or not an admin, redirect to login
+  // If not authenticated or not an admin
   if (!token || token.role !== "ADMIN") {
+    // For API routes, return a JSON response instead of redirecting
+    if (pathname.startsWith("/api/")) {
+      return new NextResponse(
+        JSON.stringify({ error: "Unauthorized" }),
+        { 
+          status: 401,
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+    }
+    
+    // For regular routes, redirect to login
     const url = new URL("/auth/login", request.url);
     url.searchParams.set("callbackUrl", encodeURI(request.url));
     return NextResponse.redirect(url);
@@ -32,7 +44,7 @@ export async function middleware(request) {
 // Configure which routes to apply this middleware to
 export const config = {
   matcher: [
-    "/admin/:path",
-    "/api/admin/:path",
+    "/admin/:path*",
+    "/api/admin/:path*",
   ],
 };

@@ -3,9 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
+import { isAfter, isBefore, isEqual, startOfToday } from 'date-fns';
+
+
 
 export default function OfferForm({ offerId }) {
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -14,7 +19,7 @@ export default function OfferForm({ offerId }) {
     endDate: '',
     couponCode: '',
     discountPercent: '',
-    active: true
+    active: false
   });
   
   const [brands, setBrands] = useState([]);
@@ -47,7 +52,7 @@ export default function OfferForm({ offerId }) {
             endDate: data.offer.endDate ? format(new Date(data.offer.endDate), 'yyyy-MM-dd') : '',
             brandId: data.offer.brandId || data.offer.brand?.id || '',
             discountPercent: data.offer.discountPercent?.toString() || '',
-            active: Boolean(formData.active)
+            active: data.offer.active === true
           };
           setFormData(formattedData);
         })
@@ -61,47 +66,59 @@ export default function OfferForm({ offerId }) {
     }
   }, [offerId]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    
-    // Clear validation errors when field is updated
-    if (formErrors[name]) {
-      setFormErrors(prev => ({
-        ...prev,
-        [name]: null
-      }));
-    }
-  };
+  // Add this to the validateForm function
+const validateForm = () => {
+  const errors = {};
+  const today = startOfToday();
+  const startDateObj = formData.startDate ? new Date(formData.startDate) : null;
+  const endDateObj = formData.endDate ? new Date(formData.endDate) : null;
+  
+  // Title validation (at least 3 characters)
+  if (!formData.title || formData.title.length < 3) {
+    errors.title = "Title must be at least 3 characters";
+  }
+  
+  // Description validation (at least 10 characters)
+  if (!formData.description || formData.description.length < 10) {
+    errors.description = "Description must be at least 10 characters";
+  }
+  
+  // Discount validation (minimum 1%)
+  if (!formData.discountPercent || parseInt(formData.discountPercent) < 1) {
+    errors.discountPercent = "Discount must be at least 1%";
+  }
+  
+  // Other required fields
+  if (!formData.brandId) errors.brandId = "Brand is required";
+  if (!formData.startDate) errors.startDate = "Start date is required";
+  
+  // Date validation
+  if (startDateObj && endDateObj && isAfter(startDateObj, endDateObj)) {
+    errors.endDate = "End date must be after start date";
+  }
+  
 
-  const validateForm = () => {
-    const errors = {};
-    
-    // Title validation (at least 3 characters)
-    if (!formData.title || formData.title.length < 3) {
-      errors.title = "Title must be at least 3 characters";
-    }
-    
-    // Description validation (at least 10 characters)
-    if (!formData.description || formData.description.length < 10) {
-      errors.description = "Description must be at least 10 characters";
-    }
-    
-    // Discount validation (minimum 1%)
-    if (!formData.discountPercent || parseInt(formData.discountPercent) < 1) {
-      errors.discountPercent = "Discount must be at least 1%";
-    }
-    
-    // Other required fields
-    if (!formData.brandId) errors.brandId = "Brand is required";
-    if (!formData.startDate) errors.startDate = "Start date is required";
-    
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  
+  setFormErrors(errors);
+  return Object.keys(errors).filter(key => !key.includes('Warning')).length === 0;
+
+};
+
+const handleChange = (e) => {
+  const { name, value, type, checked } = e.target;
+  setFormData(prev => ({
+    ...prev,
+    [name]: type === 'checkbox' ? checked : value
+  }));
+  
+  // Clear validation errors when field is updated
+  if (formErrors[name]) {
+    setFormErrors(prev => ({
+      ...prev,
+      [name]: null
+    }));
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -158,8 +175,9 @@ export default function OfferForm({ offerId }) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to save offer');
       }
+      setIsRedirecting(true);
       
-      router.push('/admin/offers');
+      router.replace('/admin/offers');
     } catch (error) {
       console.error("Submit error:", error);
       setError(error.message);
@@ -178,6 +196,15 @@ export default function OfferForm({ offerId }) {
   );
 
   return (
+    <>
+        {isRedirecting && (
+      <div className="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+          <p className="mt-4 text-blue-600 font-medium animate-pulse">Redirecting to offers page...</p>
+        </div>
+      </div>
+    )}
     <div className="max-w-2xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-lg border border-gray-100 my-4 transition-all duration-300 hover:shadow-xl">
       <div className="flex items-center mb-6">
         <div className="bg-blue-500 p-2 rounded-full text-white mr-3">
@@ -362,19 +389,27 @@ export default function OfferForm({ offerId }) {
         <div className="bg-gray-50 p-4 rounded-md transition-all duration-300 hover:bg-gray-100">
           <label className="flex items-center cursor-pointer">
             <div className="relative">
-              {/* {console.log("active == ",formData.active)} */}
               <input
                 type="checkbox"
                 name="active"
-                checked={!!formData.active}
-                onChange={handleChange}
+                checked={formData.active === true}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    active: e.target.checked
+                  });
+                }}
                 className="sr-only"
               />
-              <div className={`block w-14 h-8 rounded-full transition-colors duration-300 ${formData.active ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-              <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 ${formData.active ? 'transform translate-x-6' : ''}`}></div>
+              <div className={`block w-14 h-8 rounded-full transition-colors duration-300 ${formData.active === true ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+              <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 ${formData.active === true ? 'transform translate-x-6' : ''}`}></div>
             </div>
             <span className="ml-3 text-gray-700 font-medium">Active</span>
           </label>
+          
+          <p className="mt-2 text-xs text-gray-500">
+            Active status determines if this offer is currently visible to users.
+          </p>
         </div>
         
         <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
@@ -413,5 +448,7 @@ export default function OfferForm({ offerId }) {
         </div>
       </form>
     </div>
+    </>
+
   );
 }

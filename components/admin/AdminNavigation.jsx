@@ -10,6 +10,9 @@ const AdminNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   
   const isActive = (path) => {
+    if (path === '/admin') {
+      return pathname === '/admin';
+    }
     return pathname === path || pathname.startsWith(`${path}/`);
   };
   
