@@ -20,6 +20,7 @@ A comprehensive platform for managing brand partnerships, offers, and discounts.
 
 ## 📸 Screenshots & Demo
 
+Link : https://drive.google.com/file/d/1QzUPSUObLvOPwpfScm98R5PyFooaO4tS/view?usp=sharing 
 
 ![Public Offers Page](screenshots/Screenshot-2.png)
 *Public Offers Page*
@@ -48,14 +49,7 @@ A comprehensive platform for managing brand partnerships, offers, and discounts.
 ![Offer  Creation Page](./screenshots/Screenshot-10.png)
 *Offer Creation Page*
 
-
-   ```markdown
-   ![Demo Video](https://drive.google.com/file/d/1QzUPSUObLvOPwpfScm98R5PyFooaO4tS/view?usp=sharing )
-   ```
-   <a href="https://drive.google.com/file/d/1QzUPSUObLvOPwpfScm98R5PyFooaO4tS/view">
-
-</a>
-
+   
 ## 💻 Tech Stack
 
 - **Frontend**: Next.js, React, Tailwind CSS
