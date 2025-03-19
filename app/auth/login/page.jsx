@@ -43,15 +43,15 @@ function LoginFormContent() {
   
   // Debug info
   useEffect(() => {
-    console.log("Current auth status:", status);
-    console.log("Session data:", session);
-    console.log("Redirect attempted:", redirectAttempted);
+    // console.log("Current auth status:", status);
+    // console.log("Session data:", session);
+    // console.log("Redirect attempted:", redirectAttempted);
   }, [status, session, redirectAttempted]);
 
   // Handle redirect logic
 useEffect(() => {
   if (status === "authenticated" && session?.user?.role === "ADMIN" && !redirectAttempted) {
-    console.log("Authentication successful, setting redirect flag");
+    // console.log("Authentication successful, setting redirect flag");
     setRedirectAttempted(true);
     
     router.push("/admin");
@@ -70,14 +70,14 @@ useEffect(() => {
     setError("");
 
     try {
-      console.log("Attempting sign in with:", email);
+      // console.log("Attempting sign in with:", email);
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
       
-      console.log("Sign in result:", result);
+      // console.log("Sign in result:", result);
 
       if (result?.error) {
         setError(result.error);

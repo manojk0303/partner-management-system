@@ -187,7 +187,6 @@ const isOfferActive = (offer) => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredOffers.map((offer, index) => {
-                  const isActive = isOfferActive(offer);
                   
                   return (
                     <tr 
@@ -266,7 +265,7 @@ const isOfferActive = (offer) => {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {isActive ? (
+                        {offer.active ? (
                           <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                             Active
                           </span>

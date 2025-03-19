@@ -143,11 +143,11 @@ if (logoFile) {
     },
     body: JSON.stringify(brandData),
   });
-  console.log('Response:', response);
+  // console.log('Response:', response);
 
   // Add this to debug the response
   const responseText = await response.text();
-  console.log('Raw response:', responseText);
+  // console.log('Raw response:', responseText);
 
   // Then parse it manually
   let data;
@@ -161,7 +161,7 @@ if (logoFile) {
   if (!response.ok) {
     throw new Error(data.message || 'Failed to create brand');
   }
-      console.log(data);
+      // console.log(data);
       
       // Redirect to the brand edit page
       const brandId = data.brand?.id || data.id;

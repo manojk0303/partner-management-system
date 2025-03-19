@@ -142,7 +142,7 @@ const handleChange = (e) => {
         couponCode: formData.couponCode || null,
         // Convert discountPercent to integer or null
         discountPercent: formData.discountPercent ? parseInt(formData.discountPercent, 10) : null,
-        active: Boolean(formData.active)
+        active: formData.active === true 
       };
       
       // Remove brand if it was included in formData
@@ -389,18 +389,18 @@ const handleChange = (e) => {
         <div className="bg-gray-50 p-4 rounded-md transition-all duration-300 hover:bg-gray-100">
           <label className="flex items-center cursor-pointer">
             <div className="relative">
-              <input
-                type="checkbox"
-                name="active"
-                checked={formData.active === true}
-                onChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    active: e.target.checked
-                  });
-                }}
-                className="sr-only"
-              />
+            <input
+              type="checkbox"
+              name="active"
+              checked={formData.active === true}  // Make sure this is explicitly a boolean
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  active: e.target.checked
+                });
+              }}
+              className="sr-only"
+            />
               <div className={`block w-14 h-8 rounded-full transition-colors duration-300 ${formData.active === true ? 'bg-green-500' : 'bg-gray-300'}`}></div>
               <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 ${formData.active === true ? 'transform translate-x-6' : ''}`}></div>
             </div>
