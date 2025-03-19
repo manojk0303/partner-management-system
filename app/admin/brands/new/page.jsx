@@ -119,21 +119,33 @@ export default function CreateBrandPage() {
         location: formData.location,
       };
 
-      // Send the brand data to create the brand
-      const response = await fetch('/api/admin/brands', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(brandData),
-      });
+  // In your handleSubmit function
+  const response = await fetch('/api/admin/brands', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(brandData),
+  });
+  console.log('Response:', response);
 
-      const data = await response.json();
+  // Add this to debug the response
+  const responseText = await response.text();
+  console.log('Raw response:', responseText);
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to create brand');
-      }
-      // console.log(data);
+  // Then parse it manually
+  let data;
+  try {
+    data = JSON.parse(responseText);
+  } catch (e) {
+    console.error('Failed to parse response as JSON:', responseText);
+    throw new Error('Server returned invalid JSON');
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to create brand');
+  }
+      console.log(data);
       
       // Redirect to the brand edit page
       const brandId = data.brand?.id || data.id;

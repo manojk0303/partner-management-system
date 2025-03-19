@@ -1,10 +1,8 @@
-// Create a new file: app/api/upload/route.js
-import { NextResponse } from 'next/server';
+import { adminStorage } from '@/lib/firebase-admin';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import { storage } from '@/lib/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
@@ -13,14 +11,14 @@ export async function POST(request) {
     if (!session || session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    
     const formData = await request.formData();
     const file = formData.get('file');
     
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
-
+    
     // Create buffer from file
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -30,18 +28,23 @@ export async function POST(request) {
     const fileExtension = originalName.split('.').pop();
     const fileName = `${uuidv4()}.${fileExtension}`;
     
-    // Create a reference to the storage location
-    const storageRef = ref(storage, `brands/${fileName}`);
+    // Upload file using admin SDK
+    const bucket = adminStorage.bucket();
+    const fileRef = bucket.file(`brands/${fileName}`);
     
-    // Upload the file to Firebase Storage
-    const snapshot = await uploadBytes(storageRef, buffer, {
-      contentType: file.type,
+    await fileRef.save(buffer, {
+      metadata: {
+        contentType: file.type,
+      }
     });
     
-    // Get the download URL
-    const downloadURL = await getDownloadURL(snapshot.ref);
+    // Get the public URL
+    const [url] = await fileRef.getSignedUrl({
+      action: 'read',
+      expires: '01-01-2500', // Far future expiration
+    });
     
-    return NextResponse.json({ url: downloadURL });
+    return NextResponse.json({ url });
   } catch (error) {
     console.error("Error uploading file to Firebase:", error);
     return NextResponse.json(
